@@ -153,3 +153,52 @@ _apache_set_previous_http_compression()
 {
 	snapctl set private.http.compression="$1"
 }
+
+apache_modsecurity_enabled()
+{
+	[ "$(apache_get_modsecurity)" = "true" ]
+}
+
+apache_get_modsecurity()
+{
+	modsecurity="$(snapctl get http.modsecurity)"
+
+	if [ -z "$modsecurity" ]; then
+		apache_disable_modsecurity
+	fi
+
+	echo "$modsecurity"
+}
+
+apache_previous_modsecurity()
+{
+	snapctl get private.http.modsecurity
+}
+
+apache_set_previous_modsecurity()
+{
+	snapctl set private.http.modsecurity="$1"
+}
+
+apache_enable_modsecurity()
+{
+	_apache_set_modsecurity "true"
+}
+
+apache_disable_modsecurity()
+{
+	_apache_set_modsecurity "false"
+}
+
+_apache_set_modsecurity()
+{
+	snapctl set http.modsecurity="$1"
+}
+
+apache_install_modsecurity()
+{
+	rm -rf /usr/share/modsecurity-crs
+	git clone https://github.com/coreruleset/coreruleset /usr/share/modsecurity-crs
+	mv /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
+	mv /usr/share/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example /usr/share/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+}

@@ -35,6 +35,13 @@ else
 	echo "HTTP compression is disabled"
 fi
 
+if apache_modsecurity_enabled; then
+	echo "ModSecurity is enabled"
+	params="$params -Dsecurity2_module"
+else
+	echo "ModSecurity is disabled"
+fi
+
 if debug_mode_enabled; then
 	params="$params -DDebug"
 fi
