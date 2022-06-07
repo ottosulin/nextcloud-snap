@@ -156,8 +156,24 @@ handle_http_compression()
 	snapctl restart nextcloud.apache
 }
 
+
+handle_modsecurity()
+{
+
+	# Validate input
+	value="$(apache_get_modsecurity)"
+	if [ "$value" != "true" ] && [ "$value" != "false" ]; then
+		echo "ModSecurity must be either 'true' or 'false'"
+		return 1
+	fi
+
+	# Restart Apache to apply new config
+	snapctl restart nextcloud.apache
+}
+
 handle_apache_port_config
 handle_php_memory_limit
 handle_cronjob_interval
 handle_mode
 handle_http_compression
+handle_modsecurity
